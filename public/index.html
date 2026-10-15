@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shared Files</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="page-head">
+      <h1>Shared Files</h1>
+      <p class="muted">Anyone with this link can see and download every file below. Uploading needs the upload password.</p>
+    </header>
+
+    <section class="card" aria-labelledby="upload-title">
+      <h2 id="upload-title">Upload a file</h2>
+      <form id="upload-form" novalidate>
+        <label class="drop" id="drop">
+          <input type="file" id="file" name="file">
+          <span class="drop-main" id="drop-text">Choose a file or drag it here</span>
+          <span class="drop-sub muted" id="drop-sub">Any file type, up to 20 MB</span>
+        </label>
+
+        <div class="row">
+          <label class="field">
+            <span>Upload password</span>
+            <input type="password" id="password" autocomplete="current-password" required>
+          </label>
+          <button type="submit" id="upload-btn">Upload</button>
+        </div>
+
+        <div class="progress" id="progress" hidden>
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="card" aria-labelledby="files-title">
+      <div class="list-head">
+        <h2 id="files-title">Files <span class="count muted" id="count"></span></h2>
+        <input type="search" id="filter" placeholder="Filter by name" aria-label="Filter files by name">
+      </div>
+      <ul class="files" id="files"></ul>
+      <p class="empty muted" id="empty" hidden>No files uploaded yet.</p>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
