@@ -16,7 +16,7 @@ import { upload } from '@vercel/blob/client';
   const countEl = document.getElementById('count');
   const filterInput = document.getElementById('filter');
 
-  let maxFileBytes = 20 * 1024 * 1024;
+  let maxFileBytes = 100 * 1024 * 1024;
   let allFiles = [];
 
   function formatSize(bytes) {
@@ -124,6 +124,8 @@ import { upload } from '@vercel/blob/client';
       handleUploadUrl: '/api/upload',
       clientPayload: password,
       contentType: file.type || 'application/octet-stream',
+      // Large files go up in parts that are retried individually on failure.
+      multipart: file.size > 10 * 1024 * 1024,
       onUploadProgress: ({ percentage }) => {
         progressBar.style.width = Math.round(percentage) + '%';
       },
@@ -146,7 +148,7 @@ import { upload } from '@vercel/blob/client';
 
     uploadBtn.disabled = true;
     try {
-      // Check the password first so nobody waits for a 20 MB upload to be refused.
+      // Check the password first so nobody waits for a large upload to be refused.
       setStatus('Checking password…');
       const check = await fetch('/api/check-password', {
         method: 'POST',
