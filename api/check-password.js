@@ -9,11 +9,10 @@ module.exports = (req, res) => {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed.' });
   }
-  // Issuing upload tokens needs a read-write token; listing files can work
-  // without one, so a half-configured project otherwise fails only at upload.
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  // Catch a missing store connection here, before the visitor starts uploading.
+  if (!process.env.BLOB_STORE_ID && !process.env.BLOB_READ_WRITE_TOKEN) {
     return res.status(500).json({
-      error: 'Uploads are not set up yet: the BLOB_READ_WRITE_TOKEN environment variable is missing on the server.',
+      error: 'Uploads are not set up yet: no Blob store is connected to this project (BLOB_STORE_ID is missing).',
     });
   }
   if (!process.env.UPLOAD_PASSWORD) {

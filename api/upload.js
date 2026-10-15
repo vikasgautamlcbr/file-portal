@@ -1,6 +1,7 @@
 'use strict';
 
-const { handleUpload } = require('@vercel/blob/client');
+const { handleUploadPresigned } = require('@vercel/blob/client');
+const { issueSignedToken } = require('@vercel/blob');
 const { MAX_FILE_BYTES, PATHNAME_PATTERN, passwordMatches } = require('../lib/config');
 
 class HttpError extends Error {
@@ -10,8 +11,10 @@ class HttpError extends Error {
   }
 }
 
-// The browser calls this to get a short-lived token, then uploads the file
-// straight to Vercel Blob. The file itself never passes through this function.
+// The browser calls this to get a short-lived presigned URL, then uploads the
+// file straight to Vercel Blob. The file itself never passes through here.
+// Works with stores connected through OIDC (BLOB_STORE_ID) or with a
+// BLOB_READ_WRITE_TOKEN.
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -20,25 +23,42 @@ module.exports = async (req, res) => {
   if (!process.env.UPLOAD_PASSWORD) {
     return res.status(500).json({ error: 'UPLOAD_PASSWORD is not set on the server.' });
   }
+  // This app never asks for upload-completed callbacks, so only accept URL requests.
+  if (!req.body || req.body.type !== 'blob.generate-presigned-url') {
+    return res.status(400).json({ error: 'Unsupported request.' });
+  }
 
   try {
-    const result = await handleUpload({
+    const result = await handleUploadPresigned({
       request: req,
       body: req.body,
-      onBeforeGenerateToken: async (pathname, clientPayload) => {
+      // Only used to verify upload-completed callbacks, which are rejected above.
+      webhookPublicKey: process.env.BLOB_WEBHOOK_PUBLIC_KEY || 'unused',
+      getSignedToken: async (pathname, clientPayload) => {
         if (!passwordMatches(clientPayload)) throw new HttpError(401, 'Wrong upload password.');
         if (!PATHNAME_PATTERN.test(pathname)) throw new HttpError(400, 'Invalid file name.');
-        return {
+        const validUntil = Date.now() + 60 * 60 * 1000;
+        const token = await issueSignedToken({
+          pathname,
+          operations: ['put'],
           maximumSizeInBytes: MAX_FILE_BYTES,
-          addRandomSuffix: false,
-          allowOverwrite: false,
+          validUntil,
+        });
+        return {
+          token,
+          urlOptions: {
+            maximumSizeInBytes: MAX_FILE_BYTES,
+            addRandomSuffix: false,
+            allowOverwrite: false,
+            validUntil,
+          },
         };
       },
     });
     res.status(200).json(result);
   } catch (err) {
-    const status = err instanceof HttpError ? err.status : 400;
-    if (!(err instanceof HttpError)) console.error(err);
-    res.status(status).json({ error: err instanceof HttpError ? err.message : 'Upload could not be started.' });
+    if (err instanceof HttpError) return res.status(err.status).json({ error: err.message });
+    console.error('Upload URL could not be created:', err);
+    res.status(500).json({ error: 'Upload could not be started.' });
   }
 };

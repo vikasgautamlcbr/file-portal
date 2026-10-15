@@ -1,4 +1,4 @@
-import { upload } from '@vercel/blob/client';
+import { uploadPresigned } from '@vercel/blob/client';
 
 (function () {
   const form = document.getElementById('upload-form');
@@ -119,13 +119,11 @@ import { upload } from '@vercel/blob/client';
 
   async function sendFile(file, password) {
     const pathname = 'files/' + Date.now() + '-' + randomId() + '/' + cleanName(file.name);
-    return upload(pathname, file, {
+    return uploadPresigned(pathname, file, {
       access: 'public',
       handleUploadUrl: '/api/upload',
       clientPayload: password,
       contentType: file.type || 'application/octet-stream',
-      // Large files go up in parts that are retried individually on failure.
-      multipart: file.size > 10 * 1024 * 1024,
       onUploadProgress: ({ percentage }) => {
         progressBar.style.width = Math.round(percentage) + '%';
       },
