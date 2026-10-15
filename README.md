@@ -9,7 +9,7 @@ A small file sharing site, built to run on Vercel:
 ## Deploy on Vercel
 
 1. **Import the repo:** in Vercel, click *Add New… → Project* and pick this GitHub repository. Keep the default settings, because `vercel.json` already sets the build command and output folder.
-2. **Add Blob storage:** in the project, open the *Storage* tab, create a **Blob** store and connect it to the project. If you're asked for an access type, choose **Public**, since the app makes files downloadable by link. Connecting it adds the `BLOB_READ_WRITE_TOKEN` environment variable automatically.
+2. **Add Blob storage:** in the project, open the *Storage* tab, create a **Blob** store and connect it to the project. If you're asked for an access type, choose **Public**, since the app makes files downloadable by link. Then check *Settings → Environment Variables* for `BLOB_READ_WRITE_TOKEN`. Some store connections don't add it, and uploads need it. If it's missing, copy the read-write token (it starts with `vercel_blob_rw_`) from the Blob store's page and add it yourself.
 3. **Set the upload password:** under *Settings → Environment Variables*, add `UPLOAD_PASSWORD` with a long passphrase.
 4. **Redeploy:** go to *Deployments*, open the latest one and choose *Redeploy*, so the new variables take effect.
 

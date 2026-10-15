@@ -160,6 +160,10 @@ import { upload } from '@vercel/blob/client';
         passwordInput.focus();
         return setStatus('Wrong upload password.', 'error');
       }
+      if (!check.ok) {
+        const body = await check.json().catch(() => ({}));
+        return setStatus(body.error || 'The server could not check the password (HTTP ' + check.status + ').', 'error');
+      }
 
       setStatus('Uploading ' + file.name + '…');
       progressBar.style.width = '0';
