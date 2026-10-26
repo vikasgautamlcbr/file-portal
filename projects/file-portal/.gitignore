@@ -1,0 +1,6 @@
+node_modules/
+.env
+.env*.local
+.vercel/
+# Built by "npm run build" during deploy
+public/app.js
