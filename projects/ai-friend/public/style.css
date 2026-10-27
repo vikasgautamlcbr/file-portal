@@ -1,0 +1,112 @@
+:root {
+  --bg: #fdf6ee;
+  --surface: #ffffff;
+  --text: #2b2420;
+  --muted: #7b6d63;
+  --border: #eadfd3;
+  --accent: #ff7a59;
+  --accent-text: #ffffff;
+  --face: #2b2420;
+  --screen: #1d1b22;
+  --glow: #8ef0d0;
+  --cheek: #ff9bb0;
+  --you: #e9f2ff;
+  --friend: #fff0e8;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15131a;
+    --surface: #1e1b24;
+    --text: #f1ece6;
+    --muted: #a59a90;
+    --border: #2e2a35;
+    --accent: #ff8a6b;
+    --accent-text: #1b0f0a;
+    --screen: #0d0c10;
+    --you: #1d2a3d;
+    --friend: #33221b;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 520px; margin: 0 auto; padding: 32px 16px 64px; text-align: center; }
+h1 { margin: 20px 0 0; font-size: 1.6rem; }
+.state { margin: 4px 0 20px; color: var(--muted); min-height: 1.5em; }
+
+/* ---- Face ---------------------------------------------------------------- */
+.face {
+  position: relative;
+  width: 220px; height: 220px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--screen);
+  box-shadow: 0 0 0 10px var(--surface), 0 0 0 11px var(--border), 0 12px 40px rgba(0,0,0,.18);
+}
+.eyes { position: absolute; top: 72px; left: 0; right: 0; display: flex; justify-content: center; gap: 56px; }
+.eye {
+  width: 30px; height: 42px; border-radius: 50%;
+  background: var(--glow);
+  animation: blink 5s infinite;
+  transition: height .2s, border-radius .2s, transform .2s;
+}
+.cheeks { position: absolute; top: 120px; left: 0; right: 0; display: flex; justify-content: center; gap: 110px; opacity: 0; transition: opacity .3s; }
+.cheeks span { width: 26px; height: 12px; border-radius: 50%; background: var(--cheek); filter: blur(2px); }
+.mouth {
+  position: absolute; left: 50%; top: 140px;
+  width: 52px; height: 20px; margin-left: -26px;
+  border: 5px solid var(--glow); border-top: 0;
+  border-radius: 0 0 40px 40px;
+  transition: all .2s;
+}
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+@keyframes talk { 0%, 100% { height: 10px; } 50% { height: 26px; } }
+
+.state-off .eye { height: 6px; border-radius: 6px; animation: none; }
+.state-off .mouth { width: 30px; margin-left: -15px; height: 6px; }
+.state-speaking .mouth { animation: talk .28s infinite; border-top: 5px solid var(--glow); border-radius: 30px; }
+.state-thinking .eye { transform: translateY(-8px) translateX(6px); }
+
+.mood-happy .mouth, .mood-love .mouth { height: 26px; }
+.mood-happy .cheeks, .mood-love .cheeks, .mood-excited .cheeks { opacity: .9; }
+.mood-excited .eye { height: 48px; width: 34px; }
+.mood-love .eye { border-radius: 50% 50% 10% 10%; transform: rotate(45deg) scale(.8); }
+.mood-sad .mouth { border: 5px solid var(--glow); border-bottom: 0; border-radius: 40px 40px 0 0; top: 150px; }
+.mood-sad .eye { height: 30px; }
+.mood-surprised .mouth { width: 26px; height: 26px; margin-left: -13px; border: 5px solid var(--glow); border-radius: 50%; }
+.mood-sleepy .eye { height: 8px; border-radius: 8px; }
+.mood-curious .eye:first-child { height: 30px; }
+.mood-thinking .eye { transform: translateY(-8px) translateX(6px); }
+
+/* ---- Controls --------------------------------------------------------------- */
+button {
+  font: inherit; font-weight: 700; font-size: 1.1rem;
+  border: 0; border-radius: 999px;
+  padding: 14px 40px;
+  background: var(--accent); color: var(--accent-text);
+  cursor: pointer;
+}
+button.live { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 2px var(--border); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.settings { margin: 24px auto 0; text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; }
+.settings summary { cursor: pointer; color: var(--muted); }
+.settings label { display: block; margin-top: 12px; font-size: .9rem; }
+.settings input {
+  display: block; width: 100%; margin-top: 4px;
+  font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+}
+.hint { font-size: .85rem; color: var(--muted); margin: 10px 0 0; }
+
+.log { list-style: none; padding: 0; margin: 24px 0 0; text-align: left; display: flex; flex-direction: column; gap: 8px; }
+.log li { padding: 8px 12px; border-radius: 12px; max-width: 85%; overflow-wrap: anywhere; }
+.log .you { align-self: flex-end; background: var(--you); }
+.log .friend { align-self: flex-start; background: var(--friend); }
+.log .note { align-self: center; color: var(--muted); font-size: .85rem; padding: 0; }

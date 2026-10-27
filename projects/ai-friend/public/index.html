@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Friend</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <div class="face mood-neutral state-off" id="face" aria-hidden="true">
+      <div class="eyes"><span class="eye"></span><span class="eye"></span></div>
+      <div class="cheeks"><span></span><span></span></div>
+      <div class="mouth"></div>
+    </div>
+
+    <h1 id="name">AI Friend</h1>
+    <p class="state" id="state" role="status" aria-live="polite">Tap Talk to wake me up</p>
+
+    <div class="controls">
+      <button id="talk" type="button">Talk</button>
+    </div>
+
+    <details class="settings" id="settings">
+      <summary>Settings</summary>
+      <label>Access token
+        <input type="password" id="token" autocomplete="off" placeholder="FRIEND_ACCESS_TOKEN">
+      </label>
+      <p class="hint">Tip: use headphones so it doesn't hear itself through your speakers.</p>
+    </details>
+
+    <ol class="log" id="log" aria-label="Conversation"></ol>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

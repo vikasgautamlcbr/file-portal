@@ -5,7 +5,7 @@ All my hobby projects in one repository. Each project lives in its own folder un
 | Project | Folder | What it is | Status |
 |---------|--------|------------|--------|
 | File Portal | [`projects/file-portal`](projects/file-portal) | Password-protected uploads (up to 100 MB), public file list and downloads, stored in Vercel Blob. | Live on Vercel |
-| AI Friend *(name TBD)* | — | Coming next. | Planning |
+| AI Friend *(name TBD)* | [`projects/ai-friend`](projects/ai-friend) | A cute realtime voice buddy (OpenAI Realtime) with memory and web search, headed for an ESP32 robot. Needs an always-on host, not Vercel. | Server + browser test page built |
 
 ## Deploying a project on Vercel
 
